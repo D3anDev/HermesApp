@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Hermes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            screens: {
+              '3xl': '1920px',
+              '4xl': '2560px',
+              '5xl': '3840px',
+            },
+            colors: {
+              'primary': 'rgb(var(--color-primary-rgb) / <alpha-value>)',
+              'secondary': 'rgb(var(--color-secondary-rgb) / <alpha-value>)',
+              'accent': 'rgb(var(--color-accent-rgb) / <alpha-value>)',
+              'text-primary': 'rgb(var(--color-text-primary-rgb) / <alpha-value>)',
+              'text-secondary': 'rgb(var(--color-text-secondary-rgb) / <alpha-value>)',
+              'border-color': '#30363D',
+            },
+            animation: {
+              'watch-bounce': 'watch-bounce 0.5s ease-in-out',
+              'fade-in': 'fadeIn 0.5s ease-in-out forwards',
+              'pulse-slow': 'pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'blink-colon': 'blink-colon 1.4s step-end infinite',
+              'fade-colon': 'fade-colon 1.4s ease-in-out infinite',
+              'pulse-colon': 'pulse-colon 1.4s ease-in-out infinite',
+              'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              'watch-bounce': {
+                '0%, 100%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.05)' },
+              },
+              'fadeIn': {
+                'from': { opacity: 0, transform: 'translateY(10px)' },
+                'to': { opacity: 1, transform: 'translateY(0)' },
+              },
+              'blink': {
+                'from, to': { opacity: 0 },
+                '50%': { opacity: 1 },
+              },
+              'blink-colon': {
+                '50%': { opacity: 0 },
+              },
+              'fade-colon': {
+                '0%, 100%': { opacity: 1 },
+                '50%': { opacity: 0.3 },
+              },
+              'pulse-colon': {
+                '0%, 100%': { transform: 'scale(1)', opacity: 1 },
+                '50%': { transform: 'scale(0.9)', opacity: 0.8 },
+              },
+              'pulse-slow': {
+                '0%, 100%': { opacity: 1 },
+                '50%': { opacity: 0.5 },
+              },
+              'pulse-glow': {
+                '0%, 100%': { 
+                  boxShadow: '0 0 0 0 rgba(var(--color-accent-rgb), 0.5)',
+                },
+                '50%': { 
+                  boxShadow: '0 0 0 6px rgba(var(--color-accent-rgb), 0)',
+                },
+              },
+            },
+          },
+        },
+      }
+    </script>
+  <style>
+    :root {
+      --color-primary-rgb: 13 17 23;    /* #0D1117 */
+      --color-secondary-rgb: 22 27 34; /* #161B22 */
+      --color-accent-rgb: 88 166 255;   /* #58A6FF */
+      --color-text-primary-rgb: 201 209 217; /* #C9D1D9 */
+      --color-text-secondary-rgb: 139 148 158; /* #8B949E */
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    /* Custom scrollbar for Webkit browsers */
+    .scrollbar-thin::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: rgb(var(--color-secondary-rgb));
+      border-radius: 10px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: #30363D; /* border-color */
+      border-radius: 10px;
+      border: 2px solid rgb(var(--color-secondary-rgb));
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(var(--color-accent-rgb), 0.4);
+    }
+    /* Hide scrollbar for elements with this class */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    /* For IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+    /* Styles for rendered article HTML */
+    .article-content {
+      color: rgb(var(--color-text-primary-rgb));
+      line-height: 1.7;
+      font-size: 1rem;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .article-content p {
+      margin-bottom: 1em;
+    }
+    .article-content a {
+      color: rgb(var(--color-accent-rgb));
+      text-decoration: underline;
+    }
+    .article-content a:hover {
+      text-decoration: none;
+    }
+    .article-content h1, .article-content h2, .article-content h3 {
+      color: rgb(var(--color-text-primary-rgb));
+      font-weight: bold;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+    .article-content ul, .article-content ol {
+      margin-left: 1.5em;
+      margin-bottom: 1em;
+    }
+    .article-content li {
+      margin-bottom: 0.5em;
+    }
+    .article-content blockquote {
+        border-left: 4px solid #30363D;
+        padding-left: 1em;
+        margin-left: 0;
+        font-style: italic;
+        color: rgb(var(--color-text-secondary-rgb));
+    }
+    .typing-cursor::after {
+      content: '|';
+      display: inline-block;
+      animation: blink 0.7s infinite alternate;
+      margin-left: 2px;
+      vertical-align: middle;
+    }
+
+    /* Hide number input spinners */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    /* Live Effect CSS */
+    .live-effect-particle {
+      position: absolute;
+      pointer-events: none;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      animation-duration: var(--fall-duration);
+      animation-delay: var(--fall-delay);
+      transform: translate3d(var(--start-x), -10vh, 0) rotateZ(var(--rotation-start));
+      opacity: var(--start-opacity);
+      animation-name: fall-effect;
+    }
+
+    @keyframes fall-effect {
+      0% {
+        transform: translate3d(var(--start-x), -10vh, 0) rotateZ(var(--rotation-start));
+        opacity: var(--start-opacity);
+      }
+      100% {
+        transform: translate3d(var(--end-x), 110vh, 0) rotateZ(var(--rotation-end));
+        opacity: var(--end-opacity);
+      }
+    }
+    @keyframes drift-effect {
+      0% {
+        transform: translate3d(-30vw, var(--start-y), 0);
+        opacity: var(--start-opacity);
+      }
+      100% {
+        transform: translate3d(130vw, var(--end-y), 0);
+        opacity: var(--end-opacity);
+      }
+    }
+    @keyframes rise-effect {
+      0% {
+        transform: translate3d(var(--start-x), 110vh, 0) scale(0.5);
+        opacity: var(--start-opacity);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate3d(var(--end-x), -10vh, 0) scale(1);
+        opacity: var(--end-opacity);
+      }
+    }
+    @keyframes lightning-flash {
+      0%, 95% { opacity: 0; }
+      96% { opacity: 0.8; }
+      97% { opacity: 0.2; }
+      98% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.552.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "fuse.js": "https://aistudiocdn.com/fuse.js@^7.0.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-primary text-text-primary">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "(main) Project Hermes: Anime Tracker",
+  "description": "A privacy-focused, desktop-first React application for tracking anime progress, managing custom lists, and getting personalized recommendations powered by Gemini.",
+  "requestFramePermissions": []
+}

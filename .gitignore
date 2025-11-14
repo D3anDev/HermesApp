@@ -1,0 +1,69 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+.report/
+*.cjs.mjs
+
+# Runtime data
+.next/
+.nuxt/
+.vercel/
+.sapper/
+.vite/
+.idea/
+.vscode/
+.svelte-kit/
+.stackblitz/
+.turbo/
+dist/
+dist-ssr/
+*.local
+
+# Node.js
+node_modules/
+*.js
+*.mjs
+*.cjs
+
+# TypeScript
+*.ts
+*.cts
+*.mts
+*.d.ts
+
+# Optional npm cache
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Optional Prettier cache
+.prettiercache
+
+# Compiled output
+/dist
+/build
+/tmp
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.bak
+*.png
+
+# Screenshots folder
+screenshots/
