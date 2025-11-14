@@ -224,7 +224,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ username, animeList, isLoadi
             const MIN_STACK_HEIGHT = 550; // Threshold for vertical stacking
             const shouldForceCarousel = entry.contentRect.height < MIN_STACK_HEIGHT;
             if (shouldForceCarousel !== forceStatsCarousel) {
-                setForceCarousel(shouldForceCarousel);
+                setForceStatsCarousel(shouldForceCarousel);
             }
         }
     });
