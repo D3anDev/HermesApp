@@ -496,6 +496,71 @@ export const HomeView: React.FC<HomeViewProps> = ({ username, animeList, isLoadi
             />
         </Tile>
     ),
+    'optimized-stats': ( // Render the same as 'stats' for now
+        <Tile 
+            ref={statsTileRef}
+            title={useStackedLayout ? "Statistics Overview" : (statsTileView === 'stats' ? "Your Anime Stats" : "Genre Distribution")}
+            icon={useStackedLayout ? BarChart3 : (statsTileView === 'stats' ? BarChart3 : PieChart)} 
+            className="h-full" 
+            customBackground={customBackground} 
+            headerClassName={!isLayoutLocked && isLg ? 'cursor-grab' : ''}
+            headerExtra={!useStackedLayout && animeList.length > 0 ? statsCarouselControls : undefined}
+        >
+            {animeList.length > 0 ? (
+              useStackedLayout ? (
+                isStatsTileFullWidthTop ? (
+                  <div className="flex flex-col md:flex-row h-full gap-6">
+                      <div className="flex flex-col flex-1 min-h-0">
+                          <h4 className="text-xl font-semibold text-text-primary mb-4 flex-shrink-0">Overall Stats</h4>
+                          <div className="flex-grow min-h-0 overflow-y-auto scrollbar-thin">
+                              <AnimeStats animeList={animeList} onViewListByStatus={onViewListByStatus} />
+                          </div>
+                      </div>
+                      <div className="w-full h-px bg-border-color md:w-px md:h-full" />
+                      <div className="flex flex-col flex-1 min-h-0">
+                          <h4 className="text-xl font-semibold text-text-primary mb-4 flex-shrink-0">Genre Distribution</h4>
+                          <div className="flex-grow min-h-0 overflow-y-auto scrollbar-thin">
+                              <GenreDistribution animeList={animeList} />
+                          </div>
+                      </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col h-full gap-6 overflow-y-auto scrollbar-thin">
+                      <div className="flex flex-col">
+                          <h4 className="text-xl font-semibold text-text-primary mb-4 flex-shrink-0">Overall Stats</h4>
+                          <AnimeStats animeList={animeList} onViewListByStatus={onViewListByStatus} />
+                      </div>
+                      <div className="w-full h-px bg-border-color" />
+                      <div className="flex flex-col">
+                          <h4 className="text-xl font-semibold text-text-primary mb-4 flex-shrink-0">Genre Distribution</h4>
+                          <GenreDistribution animeList={animeList} />
+                      </div>
+                  </div>
+                )
+              ) : (
+                <div className="relative w-full h-full overflow-hidden">
+                    <div 
+                        className="absolute inset-0 flex transition-transform duration-300 ease-in-out" 
+                        style={{ transform: statsTileView === 'genres' ? 'translateX(-100%)' : 'translateX(0%)' }}
+                    >
+                        <div className="w-full h-full flex-shrink-0 overflow-y-auto scrollbar-thin">
+                            <AnimeStats animeList={animeList} onViewListByStatus={onViewListByStatus} useAbbreviations={true} />
+                        </div>
+                        <div className="w-full h-full flex-shrink-0 overflow-y-auto scrollbar-thin">
+                            <GenreDistribution animeList={animeList} />
+                        </div>
+                    </div>
+                </div>
+              )
+            ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                    <BarChart3 className="w-16 h-16 text-text-secondary mb-4" />
+                    <p className="text-xl text-text-primary font-medium">Your Stats Await</p>
+                    <p className="text-base text-text-secondary/70 mt-1">Import your list in Settings to see your stats.</p>
+                </div>
+            )}
+        </Tile>
+    ),
   };
 
   // Conditional rendering logic is now after all hooks.

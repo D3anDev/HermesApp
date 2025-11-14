@@ -25,6 +25,14 @@ const statusTextColors: Record<WatchStatus, string> = {
   [WatchStatus.PlanToWatch]: 'text-gray-300',
 };
 
+const statusHexColors: Record<WatchStatus, string> = {
+  [WatchStatus.Watching]: '#4ade80', // green-400
+  [WatchStatus.Completed]: '#3b82f6', // blue-500
+  [WatchStatus.OnHold]: '#facc15',   // yellow-400
+  [WatchStatus.Dropped]: '#ef4444',  // red-500
+  [WatchStatus.PlanToWatch]: '#9ca3af', // gray-400
+};
+
 const statusOrder = [
   WatchStatus.Watching,
   WatchStatus.Completed,
@@ -44,6 +52,94 @@ const MetricItem: React.FC<{ icon: React.ElementType; value: string | number; la
         </div>
     </div>
 );
+
+interface StatusRingChartProps {
+  statusCounts: Record<WatchStatus, number>;
+  totalEntries: number;
+  statusColors: Record<WatchStatus, string>;
+  statusOrder: WatchStatus[];
+}
+
+const StatusRingChart: React.FC<StatusRingChartProps> = ({ statusCounts, totalEntries, statusColors, statusOrder }) => {
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const strokeWidth = 10;
+  const viewBoxSize = 100;
+  const center = viewBoxSize / 2;
+
+  // If there are no segments, display a full gray circle
+  if (totalEntries === 0) {
+    return (
+      <div className="relative flex items-center justify-center w-full h-full">
+        <svg className="w-full h-full" viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}>
+          <circle
+            cx={center}
+            cy={center}
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            className="text-gray-700"
+          />
+        </svg>
+        <div className="absolute text-text-primary text-2xl font-bold">
+          {totalEntries}
+        </div>
+      </div>
+    );
+  }
+
+  let cumulativePercentage = 0;
+
+  return (
+    <div className="relative flex items-center justify-center w-full h-full">
+      <svg className="w-full h-full" viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}>
+        {/* Background circle to show if there are no entries or for a full ring effect */}
+        <circle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          className="text-border-color"
+        />
+        {statusOrder.map((status, index) => {
+          const count = statusCounts[status] || 0;
+          const percentage = totalEntries > 0 ? count / totalEntries : 0;
+
+          if (percentage === 0) return null;
+
+          const dashoffset = circumference * (1 - cumulativePercentage);
+          const dasharray = circumference * percentage;
+          
+          cumulativePercentage += percentage;
+
+          const strokeColor = statusHexColors[status]; 
+
+          return (
+            <circle
+              key={status}
+              cx={center}
+              cy={center}
+              r={radius}
+              fill="none"
+              stroke={strokeColor}
+              strokeWidth={strokeWidth}
+              strokeDasharray={`${dasharray} ${circumference - dasharray}`}
+              strokeDashoffset={dashoffset}
+              transform={`rotate(-90 ${center} ${center})`} // Start from top
+              className="transition-all duration-300 ease-out"
+            />
+          );
+        })}
+      </svg>
+      <div className="absolute text-text-primary text-2xl font-bold">
+        {totalEntries}
+      </div>
+    </div>
+  );
+};
 
 export const AnimeStats: React.FC<AnimeStatsProps> = ({ animeList, onViewListByStatus, useAbbreviations = false }) => {
   const stats = useMemo(() => {
@@ -87,56 +183,52 @@ export const AnimeStats: React.FC<AnimeStatsProps> = ({ animeList, onViewListByS
         <MetricItem icon={Star} value={stats.overallAverageUserScore} label="Your Avg. Score" shortLabel="Avg. Score" useAbbreviations={useAbbreviations} />
       </div>
       
-      <div className="mt-8">
-        <h4 className="text-lg font-semibold text-text-primary mb-3">Overall List Progress</h4>
-        <div className="w-full bg-border-color rounded-full h-3 lg:h-5 flex overflow-hidden transition-all duration-300">
-          {statusOrder.map((status) => {
-            const count = stats.statusCounts[status] || 0;
-            const percentage = stats.totalEntries > 0 ? (count / stats.totalEntries) * 100 : 0;
-            if (percentage === 0) return null;
-            return (
-              <div
-                key={status}
-                className={`${statusColors[status]} h-full transition-all duration-300`}
-                style={{ width: `${percentage}%` }}
-                title={`${status}: ${count} (${percentage.toFixed(1)}%)`}
-                role="progressbar"
-                aria-valuenow={count}
-                aria-valuemin={0}
-                aria-valuemax={stats.totalEntries}
-                aria-valuetext={`${status} status, ${count} entries`}
-              ></div>
-            );
-          })}
+      <div className="mt-3 flex flex-col lg:flex-row gap-3 items-stretch">
+        {stats && (
+          <div className="bg-primary p-3 rounded-lg flex items-center justify-center flex-shrink-0 w-full max-w-[12rem] aspect-square">
+            <StatusRingChart
+              statusCounts={stats.statusCounts}
+              totalEntries={stats.totalEntries}
+              statusColors={statusColors}
+              statusOrder={statusOrder}
+            />
+          </div>
+        )}
+        {/* Placeholder for the legend */}
+        <div className="flex-1">
+            <div className="bg-primary p-3 rounded-lg">
+                <div className="flex flex-col gap-0"> {/* Changed to flex-col to stack buttons and allow full-width separators */}
+                    {statusOrder.map((status, index) => {
+                        const count = stats.statusCounts[status] || 0;
+                        const percentage = stats.totalEntries > 0 ? (count / stats.totalEntries) * 100 : 0;
+                        return (
+                            <React.Fragment key={status}>
+                                <button 
+                                    onClick={() => onViewListByStatus(status)}
+                                    className="flex items-center justify-between w-full p-2 rounded-md transition-colors duration-200 hover:bg-hover-fill-color focus:outline-none focus:ring-2 focus:ring-accent"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-3 h-3 rounded-full ${statusColors[status]}`}></div>
+                                        <span className="text-text-primary text-sm">{status}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                                                            <span className={`text-text-secondary text-sm ${statusTextColors[status]}`}>{count}</span>
+                                                                            <span className={`text-text-secondary text-sm font-semibold ${statusTextColors[status]}`}>{percentage.toFixed(1)}%</span>                                    </div>
+                                </button>
+                                {index < statusOrder.length - 1 && (
+                                    <div className="border-b border-border-color w-full my-1"></div>
+                                )}
+                            </React.Fragment>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
       </div>
+      
 
-      <div className="mt-6">
-          <h4 className="text-lg font-semibold text-text-primary mb-4">List Distribution</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {statusOrder.map(status => {
-                  const count = stats.statusCounts[status] || 0;
-                  const percentage = stats.totalEntries > 0 ? (count / stats.totalEntries) * 100 : 0;
-                  if (count === 0) return null;
-                  return (
-                      <button 
-                          key={status} 
-                          onClick={() => onViewListByStatus(status)}
-                          className="flex flex-col bg-primary p-3 md:p-4 rounded-lg border border-border-color text-left hover:bg-border-color transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
-                      >
-                          <div className="flex items-center gap-2 mb-1">
-                              <div className={`w-3 h-3 rounded-full ${statusColors[status]}`}></div>
-                              <span className={`text-sm ${statusTextColors[status]}`}>{status}</span>
-                          </div>
-                          <div className="flex flex-col xs:flex-row items-baseline justify-between flex-wrap">
-                              <span className={`text-xl xs:text-base sm:text-lg lg:text-xl font-bold ${statusTextColors[status]}`}>{count}</span>
-                              <span className="text-xs sm:text-base text-text-secondary whitespace-nowrap">{percentage.toFixed(1)}%</span>
-                          </div>
-                      </button>
-                  );
-              })}
-          </div>
-      </div>
+
+
     </div>
   );
 };
